@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8"/>
+	<title>图片预加载之无序加载(相册)</title>
+
+	<style>
+	    html, body {
+			height: 100px;
+	    }
+	    a {
+	    	text-decoration: none;
+	    }
+		.box {
+			text-align: center;
+		}
+		.btn {
+			display: inline-block;
+			line-height: 30px;
+			border: 1px solid #ccc;
+			background-color: #fff;
+			padding: 0 10px;
+			margin-right: 50px;
+			color: #333;
+		}
+		.btn:hover {
+			background-color: #eee;
+		}
+
+		.loading {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: #eee;
+			text-align: center;
+			font-size: 30px;
+		}
+		.process {
+			margin-top: 300px;
+		}
+	</style>
+</head>
+<body>
+	<div class="box">
+		<img src="http://pic1.win4000.com/wallpaper/c/57d65d8d81cdc.jpg" alt="pic" id="img" width="1020" />
+		<p>
+			<a href="javascript:;" class="btn" data-control="pre">上一页</a>
+			<a href="javascript:;" class="btn" data-control="next">下一页</a>
+		</p>
+	</div>
+
+	<div class="loading">
+		<p class="process">0%</p>
+	</div>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="js/preload.js"></script>
+	<script type="text/javascript">
+		var imgs = [
+			"http://pic1.win4000.com/wallpaper/c/57d65d8d81cdc.jpg",
+			"http://pic1.win4000.com/wallpaper/c/57d65d98ae19a.jpg",
+			"http://pic1.win4000.com/wallpaper/c/57d65d91d29f4.jpg",
+			"http://pic1.win4000.com/wallpaper/c/57d65d9cdd760.jpg",
+			"http://pic1.win4000.com/wallpaper/c/57d65d93ad82e.jpg",
+			"http://pic1.win4000.com/wallpaper/c/57d65d9ad27f1.jpg",
+			"http://pic1.win4000.com/wallpaper/c/57d65d9f24354.jpg"
+		];
+
+		var index = 0,
+		    len = imgs.length;
+
+		//预加载图片
+		$.preload(imgs, {
+			each : eachPic,
+			all : allPic
+		});
+
+		$(".btn").on("click", changePic);
+
+		function eachPic (count) {
+			$(".process").html(Math.round((count + 1) / len * 100) + "%");
+		}
+		function allPic () {
+			$(".loading").fadeOut();
+			document.title = "1/" + len;
+		}
+		function changePic () {
+			if ("pre" === $(this).data("control")) {
+				index = Math.max(0, --index);
+			} else {
+				index = Math.min(len -1, ++index);
+			}
+			$("#img").attr("src", imgs[index]);
+			document.title = index + "/" + len;
+		}
+	</script>
+</body>
+</html>
