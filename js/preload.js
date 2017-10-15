@@ -6,15 +6,20 @@
 		this.imgs = (typeof imgs === "string") ? [imhgs] : imgs;
 		this.opts = $.extend({}, PreLoad.DEFAULTS, options);
 
-		this._onordered();
+		if(this.opts.order === "ordered"){
+			this._ordered();
+		}else{
+			this._unordered();
+		}
 	}
 
 	PreLoad.DEFAULTS = {
+		order : "unordered", //无序加载
 		each : null, //每张图片加载完后执行
 		all : null   //所有图片加载完后执行
 	}
 
-	PreLoad.prototype._onordered = function () {//无序加载
+	PreLoad.prototype._unordered = function () {//无序加载
 		var imgs = this.imgs,
 		    opts = this.opts,
 		    count = 0,
@@ -40,6 +45,32 @@
 			image.src = src;
 
 		});
+	}
+
+	PreLoad.prototype._ordered = function () {//有序加载
+		var imgs = this.imgs,
+		    opts = this.opts,
+		    count = 0,
+		    len = imgs.length;
+
+	    load();
+
+		//有序预加载图片
+		function load () {
+			var image = new Image();
+			$(image).on("load error", function () {
+				opts.each && opts.each(count);
+
+				if(count >= len){
+					//所有图片已加载完毕
+					opts.all && opts.all();
+				}else{
+					load();
+				}
+				count++;
+			});
+			image.src = imgs[count];
+		}
 	}
 
 	$.extend({

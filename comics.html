@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<title>图片预加载之有序加载(漫画)</title>
+
+	<style>
+	    a {
+	    	text-decoration: none;
+	    }
+		.box {
+			text-align: center;
+		}
+		.btn {
+			display: inline-block;
+			line-height: 30px;
+			border: 1px solid #ccc;
+			background-color: #fff;
+			padding: 0 10px;
+			margin-right: 50px;
+			color: #333;
+		}
+		.btn:hover {
+			background-color: #eee;
+		}
+	</style>
+</head>
+<body>
+	<div class="box">
+		<img src="http://www.005.tv/uploads/allimg/161215/1H3291443-1.jpg" alt="pic" id="img" width="1020" />
+		<p>
+			<a href="javascript:;" class="btn" data-control="pre">上一页</a>
+			<a href="javascript:;" class="btn" data-control="next">下一页</a>
+		</p>
+	</div>
+	
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="js/preload.js"></script>
+	<script type="text/javascript">
+		var imgs = [
+			"http://www.005.tv/uploads/allimg/161215/1H3291443-1.jpg",
+			"http://www.005.tv/uploads/allimg/161110/14152421E-4.jpg",
+			"http://www.005.tv/uploads/allimg/161110/1415241W7-13.jpg",
+			"http://www.005.tv/uploads/allimg/161215/1H32964I-9.jpg",
+			"http://imgstore.cdn.sogou.com/app/a/100540002/767219.jpg",
+			"http://img01.sogoucdn.com/app/a/100540002/563484.jpg",
+			"http://i-7.vcimg.com/trim/77ac2fcdb486892c0abe6679b17cabd9154551/trim.jpg"
+		];
+
+		var len = imgs.length,
+		    index = 0;
+
+		$.preload(imgs, {
+			order : "ordered"
+		});
+
+		$(".btn").on("click", changePic);
+
+		function changePic () {
+			if ("pre" === $(this).data("control")) {
+				index = Math.max(0, --index);
+			} else {
+				index = Math.min(len -1, ++index);
+			}
+			$("#img").attr("src", imgs[index]);
+			document.title = index + "/" + len;
+		}
+	</script>
+</body>
+</html>
